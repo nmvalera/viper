@@ -658,6 +658,26 @@ func TestBindPFlagsStringSlice(t *testing.T) {
 	}
 }
 
+func TestBindPFlagsStringSliceBindEnv(t *testing.T) {
+	flagSet := pflag.NewFlagSet("test", pflag.ContinueOnError)
+	flagSet.StringSlice("stringslice", []string{"default"}, "test")
+	BindPFlag("strings", flagSet.Lookup("stringslice"))
+	BindEnv("strings", "TEST_ENV")
+
+	// Set an array in environment variable
+	os.Setenv("TEST_ENV", "[string1,string2]")
+	assert.Equal(t, 2, len(GetStringSlice("strings")))
+
+	// No brackets
+	os.Setenv("TEST_ENV", "string1,string2,string3")
+	assert.Equal(t, 3, len(GetStringSlice("strings")))
+
+	// Automatic Env
+	os.Setenv("STRINGS", "string1,string2")
+	AutomaticEnv()
+	assert.Equal(t, 2, len(GetStringSlice("strings")))
+}
+
 func TestBindPFlag(t *testing.T) {
 	var testString = "testing"
 	var testValue = newStringValue(testString, &testString)
