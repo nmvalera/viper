@@ -993,6 +993,9 @@ func (v *Viper) find(lcaseKey string) interface{} {
 		// even if it hasn't been registered, if automaticEnv is used,
 		// check any Get request
 		if val, ok := v.getEnv(v.mergeWithEnvPrefix(lcaseKey)); ok {
+			if flag, exists := v.pflags[lcaseKey]; exists {
+				return castStringToFlagValue(val, flag)
+			}
 			return val
 		}
 		if nested && v.isPathShadowedInAutoEnv(path) != "" {
@@ -1002,6 +1005,9 @@ func (v *Viper) find(lcaseKey string) interface{} {
 	envkey, exists := v.env[lcaseKey]
 	if exists {
 		if val, ok := v.getEnv(envkey); ok {
+			if flag, exists := v.pflags[lcaseKey]; exists {
+				return castStringToFlagValue(val, flag)
+			}
 			return val
 		}
 	}
