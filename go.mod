@@ -25,3 +25,5 @@ require (
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 )
+
+replace github.com/spf13/cast => github.com/nmvalera/cast v0.0.0-20250411145757-fc296861780c
